@@ -38,13 +38,10 @@ void convertToGrayscale(JSAMPLE *imageData, int width, int height, int pixelSize
             // unsigned char gray = (unsigned char)r;
 
             // use average of RGB to create grayscale image
-
-            // unsigned char gray = (unsigned char)((r + g + b) / 3);
+            unsigned char gray = (unsigned char)((r + g + b) / 3);
 
             // set the pixel to the new grayscale value
-            imageData[index] = r;
-            imageData[index + 1] = r;
-            imageData[index + 2] = r;
+            imageData[y * width + x] = gray;
         }
     }
 }

@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <jpeglib.h>
-#include "function/conversion.h"
+#include "./function/conversion.h"
 
 // Driver code
 int main()
 {
     // setup the input file to be read
-    FILE *inputFile = fopen("inputImg/img.jpeg", "rb");
+    FILE *inputFile = fopen("../inputImg/img.jpeg", "rb");
     if (!inputFile)
     {
         printf("Error opening file\n");
@@ -28,7 +28,7 @@ int main()
     jpeg_read_header(&cinfoIn, TRUE);
 
     // set parameters for decompression
-    cinfoIn.out_color_space = JCS_GRAYSCALE;
+    cinfoIn.out_color_space = JCS_RGB;
     jpeg_start_decompress(&cinfoIn);
 
     // get image parameters/variables:
@@ -51,7 +51,8 @@ int main()
 
     //******************************************************************************************* */
 
-    FILE *outputFile = fopen("outputImg/img.jpg", "wb");
+    // write the output file
+    FILE *outputFile = fopen("../outputImg/img.jpg", "wb");
     if (!outputFile)
     {
         printf("Error opening file\n");
@@ -77,7 +78,7 @@ int main()
 
     while (cinfoOut.next_scanline < height)
     {
-        rowPointer[0] = &imageData[cinfoOut.next_scanline * width * pixelSize];
+        rowPointer[0] = &imageData[cinfoOut.next_scanline * width];
         jpeg_write_scanlines(&cinfoOut, rowPointer, 1);
     }
 
