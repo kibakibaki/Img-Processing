@@ -40,13 +40,39 @@ int main()
     fclose(inputFile);
 
     /*
+    Communication and enquiry with the user
+    */
+
+    printf("Original Image Size: Width=%d x Height=%d\n", original_width, original_height);
+    int new_width;
+    int new_height;
+
+    printf("Please enter the desired new width: ");
+    while (scanf("%d", &new_width) != 1 || new_width <= 0)
+    {
+        printf("Invalid input. Please enter a positive integer for width: ");
+        while (getchar() != '\n')
+            ;
+    }
+
+    printf("Please enter the desired new height: ");
+    while (scanf("%d", &new_height) != 1 || new_height <= 0)
+    {
+        printf("Invalid input. Please enter a positive integer for height: ");
+        while (getchar() != '\n')
+            ;
+    }
+
+    if (new_width > original_width * 10 || new_height > original_height * 10)
+    {
+        printf("Warning: The new dimensions are significantly larger than the original image.\n");
+    }
+
+    /*
 
     Calling the scaling transformation function
 
     */
-
-    int new_width = original_width / 2;   // Example: shrink to half
-    int new_height = original_height / 2; // Example: shrink to half
 
     JSAMPLE *resizedImage = scaling(imageData, original_height, original_width, pixelSize, new_width, new_height);
 
