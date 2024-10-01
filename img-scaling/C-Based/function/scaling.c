@@ -5,7 +5,7 @@
 JSAMPLE *scaling(JSAMPLE *imgData, int originalHeight, int originalWidth, int pixelSize, int newWidth, int newHeight)
 {
     // Nearest Neighbor Algorithm
-    JSAMPLE *resizedImgData = (JSAMPLE)malloc(newWidth * newHeight * pixelSize);
+    JSAMPLE *resizedImgData = (JSAMPLE *)malloc(newWidth * newHeight * pixelSize);
     if (resizedImgData == NULL)
     {
         fprintf(stderr, "Memory allocation failed");
@@ -13,8 +13,8 @@ JSAMPLE *scaling(JSAMPLE *imgData, int originalHeight, int originalWidth, int pi
     }
 
     // calculate the ratio between new and original factrors
-    float widthRatio = (float)originalWidth / newWidth;
-    float heightRatio = (float)originalHeight / newHeight;
+    double widthRatio = (double)(originalWidth) / newWidth;
+    double heightRatio = (double)(originalHeight) / newHeight;
 
     // Loop over the newimage
     for (int y = 0; y < newHeight; y++)
@@ -26,7 +26,7 @@ JSAMPLE *scaling(JSAMPLE *imgData, int originalHeight, int originalWidth, int pi
             int origY = (int)(y * heightRatio);
 
             // calculate posoition in the array
-            int origIndex = (originalHeight * originalWidth + origX) * pixelSize;
+            int origIndex = (origY * originalWidth + origX) * pixelSize;
             int newIndex = (y * newWidth + x) * pixelSize;
 
             // copy pixel data
@@ -35,5 +35,6 @@ JSAMPLE *scaling(JSAMPLE *imgData, int originalHeight, int originalWidth, int pi
                 resizedImgData[newIndex + i] = imgData[origIndex + i];
             }
         }
-        return resizedImgData;
     }
+    return resizedImgData;
+}
