@@ -4,7 +4,10 @@ from ctypes import c_int, c_float, c_ubyte, POINTER
 from PIL import Image
 import time
 
-scaling_lib = ctypes.CDLL("../library/scalingFunction.so")
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+lib_path = os.path.join(current_dir, "../library/scalingFunction.so")
+scaling_lib = ctypes.CDLL(lib_path)
 
 scaling_lib.scaling.restype = ctypes.POINTER(ctypes.c_ubyte)
 scaling_lib.scaling.argtypes = [
