@@ -1,8 +1,10 @@
 import ctypes 
 from PIL import Image
 import numpy as np
+import os
 
-lib_path = "../library/libimgprocess.so"
+current_dir = os.path.dirname(os.path.abspath(__file__))
+lib_path = os.path.join(current_dir, "../library/libimgprocess.so")
 lib = ctypes.CDLL(lib_path)
 
 # Define the function signature from the C code
