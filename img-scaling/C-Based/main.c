@@ -1,12 +1,14 @@
+#define _POSIX_C_SOURCE 199309L
 #include <stdio.h>
 #include <stdlib.h>
 #include <jpeglib.h>
 #include "./function/scaling.h"
+#include <time.h>
 
 // Driver code
 int main()
 {
-    FILE *inputFile = fopen("../ImgInput/img.jpg", "rb");
+    FILE *inputFile = fopen("../ImgInput/largeImg.jpeg", "rb");
     if (!inputFile)
     {
         printf("Error opening file\n");
@@ -69,6 +71,13 @@ int main()
     }
 
     /*
+    Start timing the processing
+    */
+
+    struct timespec start_time, end_time;
+    clock_gettime(CLOCK_MONOTONIC, &start_time);
+
+    /*
 
     Calling the scaling transformation function
 
@@ -88,14 +97,20 @@ int main()
         return 1;
     }
 
+    clock_gettime(CLOCK_MONOTONIC, &end_time);
+
+    // **time calc**
+    double elapsed_time = (end_time.tv_sec - start_time.tv_sec) +
+                          (end_time.tv_nsec - start_time.tv_nsec) / 1e9;
+
+    printf("Image processing time: %.6f seconds\n", elapsed_time);
+
     // output processed image
     FILE *outputFile = fopen("../ImgOutput/resized_image.jpg", "wb");
     if (!outputFile)
     {
         printf("Error: Could not open output file.\n");
         free(resizedImage);
-        jpeg_finish_decompress(&cinfo);
-        jpeg_destroy_decompress(&cinfo);
         return 1;
     }
 
