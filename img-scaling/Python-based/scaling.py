@@ -17,7 +17,7 @@ scaling_lib.scaling.argtypes = [
 ]
 
 def main():
-    filename = input("Please enter the name you want to process in ImgInput file: ")
+    filename = input("Please enter the name you want to process in ImgInput folder: ")
     filepath = os.path.join("../ImgInput", filename)
     if not os.path.exists(filepath):
         print("Error: file not found.")
