@@ -10,10 +10,10 @@
 1. import the img, read it, √
 2. put data into the function √
 3. time the processing, print it out √
-4. enquiry about the input file name
+4. enquiry about the input file name √
 5. start with a dummy height and width. √
 6. if dummy feasible. try visualise the cropping function in dynamic ways
-7. write&output the croppedImg to outputImg
+7. write&output the croppedImg to outputImg √
 
 */
 
@@ -60,12 +60,50 @@ int main()
     fclose(inputFile);
 
     /*
+    Enquiry for cropping data from users
     dummy data
     */
-    int croppingX = 50;
-    int croppingY = 100;
-    int targetWidth = 200;
-    int targetHeight = 150;
+
+    printf("Original image size: width=%d, height=%d\n", original_width, original_height);
+    int croppingX;
+    int croppingY;
+
+    printf("Let's start with the initial point to crop, which will be the left-up corner point of cropping box\n");
+    printf("Please enter the X axis of start cropping point: ");
+    while (scanf("%d", &croppingX) != 1 || croppingX < 0 || croppingX > original_width)
+    {
+        printf("Invalid input. Plz enter a positive number, and within the original width");
+        while (getchar() != '\n')
+            ;
+    }
+
+    printf("Please enter the Y axis of start cropping point: ");
+    while (scanf("%d", &croppingY) != 1 || croppingY < 0 || croppingY > original_height)
+    {
+        printf("Invalid input. Plz enter a positive number, and within the original height");
+        while (getchar() != '\n')
+            ;
+    }
+
+    printf("Remaining space for cropped img: width=%d, height=%d\n", original_width - croppingX, original_height - croppingY);
+    int targetWidth;
+    int targetHeight;
+
+    printf("Plz enter a width for target width: ");
+    while (scanf("%d", &targetWidth) != 1 || targetWidth + croppingX > original_width)
+    {
+        printf("Sorry it seems like the width is over the bound, pls enter a width that the cropping box can be inside the original img: ");
+        while (getchar() != '\n')
+            ;
+    }
+
+    printf("Plz enter a width for target height: ");
+    while (scanf("%d", &targetHeight) != 1 || targetHeight + croppingY > original_height)
+    {
+        printf("Sorry it seems like the width is over the bound, pls enter a height that the cropping box can be inside the original img: ");
+        while (getchar() != '\n')
+            ;
+    }
 
     /*
     Start timing the processing
