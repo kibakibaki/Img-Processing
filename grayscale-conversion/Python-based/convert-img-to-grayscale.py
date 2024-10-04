@@ -24,7 +24,7 @@ def convert_img_to_grayscale(input_path, output_path):
     # convert the img to ctypes array
     image_data = image_array.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte))
 
-    #use C function
+    # use C function
     lib.convertToGrayscale(image_data, width, height, pixel_size)
 
     # write the output image

@@ -4,6 +4,6 @@
 
 #include <jpeglib.h>
 
-void convertToGrayscale(JSAMPLE *imageData, int width, int height, int pixelSize);
+unsigned char *convertToGrayscale(JSAMPLE *imageData, int width, int height, int pixelSize);
 
 #endif

@@ -1,8 +1,16 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "conversion.h"
 
-void convertToGrayscale(JSAMPLE *imageData, int width, int height, int pixelSize)
+unsigned char *convertToGrayscale(JSAMPLE *imageData, int width, int height, int pixelSize)
 {
+    unsigned char *grayImageData = (unsigned char *)malloc(width * height * sizeof(unsigned char));
+    if (!grayImageData)
+    {
+        printf("Failed to allocate memory for grayscale image.\n");
+        return NULL;
+    }
+
     for (int y = 0; y < height; y++)
     {
         for (int x = 0; x < width; x++)
@@ -41,7 +49,8 @@ void convertToGrayscale(JSAMPLE *imageData, int width, int height, int pixelSize
             unsigned char gray = (unsigned char)((r + g + b) / 3);
 
             // set the pixel to the new grayscale value
-            imageData[y * width + x] = gray;
+            grayImageData[y * width + x] = gray;
         }
     }
+    return grayImageData;
 }

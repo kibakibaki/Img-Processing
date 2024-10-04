@@ -60,5 +60,8 @@
     "stdlib.h": "c",
     "scaling.h": "c",
     "time.h": "c"
-  }
+  },
+  "python.analysis.extraPaths": [
+    "./console/function"
+  ]
 }
