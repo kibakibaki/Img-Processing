@@ -85,8 +85,32 @@ def main():
     cropped_img_size = targetWidth * targetHeight * pixel_size
     cropping_lib.cropping.restype = ctypes.POINTER(ctypes.c_ubyte * cropped_img_size)
     
-    
+    cropped_img_ptr = cropping_lib.cropping(
+        img_data_array,
+        original_height,
+        original_width,
+        pixel_size,
+        croppingX,
+        croppingY,
+        targetHeight,
+        targetWidth
+    )
         
+    cropped_img_data = bytes(cropped_img_ptr.contents)
+    print(len(cropped_img_data))  # Check the size of the image data
+
+    # end the counting
+    end_time = time.perf_counter()
+    elapsed_time = end_time - start_time
+    print(f"Image processing time: {elapsed_time:.6f} seconds")
+
+    cropped_img = Image.frombytes('RGB', (targetWidth, targetHeight), cropped_img_data)
+
+    # save processed img
+    output_filepath = os.path.join("../ImgOutput", filename)
+    cropped_img.save(output_filepath, "JPEG")
+
+    print("Image scaling and kexportcompleted successfully.")
     
 
 if __name__ == "__main__":
