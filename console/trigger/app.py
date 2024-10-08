@@ -11,7 +11,7 @@ sys.path.append(function_path)
 
 try:
     from grayscale import grayscale
-    # from scaling import scaling
+    from scaling import scaling
     from cropping import cropping
 except ImportError:
     print("ERR: module not found.")
@@ -65,6 +65,8 @@ def main():
             break
         elif choice == "3":
             print("start scaling...")
+            print(f"Original image size: width={original_width}, height={original_height}")
+            scaling_img = scaling(original_width, original_height, pixel_size, img_data_array)
             function_number = 3
             break
         else:
@@ -77,7 +79,7 @@ def main():
     elif function_number ==2:
         cropped_img.save(output_filepath, "JPEG")
     elif function_number ==3:
-        cropped_img.save(output_filepath, "JPEG")
+        scaling_img.save(output_filepath, "JPEG")
 
 
     print("Image scaling and export completed successfully.")
