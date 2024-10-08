@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <jpeglib.h>
-#include "./function/conversion.h"
+#include "./function/grayscale.h"
 
 // Driver code
 int main()
 {
     // setup the input file to be read
-    FILE *inputFile = fopen("../inputImg/img.jpeg", "rb");
+    FILE *inputFile = fopen("../ImgInput/img.jpeg", "rb");
     if (!inputFile)
     {
         printf("Error opening file\n");
@@ -38,6 +38,14 @@ int main()
     int pixelSize = cinfoIn.output_components;
 
     JSAMPLE *imageData = (JSAMPLE *)malloc(width * height * pixelSize);
+    if (!imageData)
+    {
+        printf("Failed to allocate memory for imageData.\n");
+        jpeg_destroy_decompress(&cinfoIn);
+        fclose(inputFile);
+        return 1;
+    }
+
     JSAMPROW rowPointer[1];
     while (cinfoIn.output_scanline < height)
     {
@@ -45,20 +53,28 @@ int main()
         jpeg_read_scanlines(&cinfoIn, rowPointer, 1);
     }
 
+    jpeg_finish_decompress(&cinfoIn);
+    jpeg_destroy_decompress(&cinfoIn);
+    fclose(inputFile);
+
     //******************************************************************************************* */
     // processing function call
-    convertToGrayscale(imageData, width, height, pixelSize);
-
+    JSAMPLE *grayImageData = grayscale(imageData, width, height, pixelSize);
+    if (!grayImageData)
+    {
+        printf("Grayscale conversion failed.\n");
+        free(imageData);
+        return 1;
+    }
+    free(imageData);
     //******************************************************************************************* */
 
     // write the output file
-    FILE *outputFile = fopen("../outputImg/img.jpg", "wb");
+    FILE *outputFile = fopen("../ImgOutput/img.jpg", "wb");
     if (!outputFile)
     {
-        printf("Error opening file\n");
-        free(imageData);
-        jpeg_finish_decompress(&cinfoIn);
-        jpeg_destroy_decompress(&cinfoIn);
+        printf("Error opening output file\n");
+        free(grayImageData);
         return 1;
     }
 
@@ -78,14 +94,15 @@ int main()
 
     while (cinfoOut.next_scanline < height)
     {
-        rowPointer[0] = &imageData[cinfoOut.next_scanline * width];
+        rowPointer[0] = &grayImageData[cinfoOut.next_scanline * width];
         jpeg_write_scanlines(&cinfoOut, rowPointer, 1);
     }
 
     jpeg_finish_compress(&cinfoOut);
     jpeg_destroy_compress(&cinfoOut);
     fclose(outputFile);
-    free(imageData);
+
+    free(grayImageData);
 
     printf("Image converted successfully\n");
     return 0;

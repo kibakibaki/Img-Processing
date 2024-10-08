@@ -1,4 +1,6 @@
 import ctypes 
+import os
+from ctypes import c_int, c_float, c_ubyte, POINTER
 from PIL import Image
 import numpy as np
 import os
@@ -8,31 +10,49 @@ lib_path = os.path.join(current_dir, "../library/libimgprocess.so")
 lib = ctypes.CDLL(lib_path)
 
 # Define the function signature from the C code
-# convertToGrayscale(JSAMPLE *imageData, int width, int height, int pixelSize);
-lib.convertToGrayscale.argtypes = (ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int, ctypes.c_int, ctypes.c_int)
-lib.convertToGrayscale.restype = None
+lib.grayscale.restype = POINTER(c_ubyte)
+lib.grayscale.argtypes = [
+    POINTER(c_ubyte), # imgData
+    c_int, # width
+    c_int, # height
+    c_int, # pixelSize
+]
 
-def convert_img_to_grayscale(input_path, output_path):
+def main():
     # Open the image file
-    img = Image.open(input_path)
-    img = img.convert("RGB")
+    filename = input("Please enter the name you want to process in ImgInput folder: ")
+    filepath = os.path.join("../ImgInput", filename)
+    if not os.path.exists(filepath):
+        print("Error: file not found.")
+        return
+    
+    with Image.open(filepath) as img:   
+        img = img.convert('RGB')
+        original_width, original_height = img.size
+        pixel_size = 3
 
-    # pit the image into a numpy array
-    image_array = np.array(img, dtype=np.uint8)
-    height, width, pixel_size = image_array.shape
-
-    # convert the img to ctypes array
-    image_data = image_array.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte))
-
-    # use C function
-    lib.convertToGrayscale(image_data, width, height, pixel_size)
+        img_data = img.tobytes()
+        img_data_array = (ctypes.c_ubyte * len(img_data)).from_buffer_copy(img_data)
 
     # write the output image
-    gray_image_array = np.ctypeslib.as_array(image_data, shape=(height, width)) 
-    gray_img = Image.fromarray(gray_image_array, mode='L')
+    grayscaled_img_ptr = lib.grayscale(
+        img_data_array,
+        original_width,
+        original_height,
+        pixel_size,
+    )
 
-    gray_img.save(output_path)
+    buffer_size = original_width * original_height
+    grayscaled_img_array_type = ctypes.c_ubyte * buffer_size
+    grayscaled_img_array = ctypes.cast(grayscaled_img_ptr, POINTER(grayscaled_img_array_type))
+    grayscaled_img_data = bytes(grayscaled_img_array.contents)
+    grayscaled_img = Image.frombytes('L', (original_width, original_height), grayscaled_img_data)
+
+    output_filepath = os.path.join("../ImgOutput", filename)
+    grayscaled_img.save(output_filepath, "JPEG")
+
     print("Image processing complete")
 
 # Call the function
-convert_img_to_grayscale("../inputImg/img.jpeg", "../outputImg/img_gray.jpg")
+if __name__ == "__main__":
+    main()

@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "conversion.h"
+#include "grayscale.h"
 
-unsigned char *convertToGrayscale(JSAMPLE *imageData, int width, int height, int pixelSize)
+JSAMPLE *grayscale(JSAMPLE *imageData, int width, int height, int pixelSize)
 {
-    unsigned char *grayImageData = (unsigned char *)malloc(width * height * sizeof(unsigned char));
+    JSAMPLE *grayImageData = (JSAMPLE *)malloc(width * height * sizeof(JSAMPLE));
     if (!grayImageData)
     {
         printf("Failed to allocate memory for grayscale image.\n");
@@ -27,9 +27,9 @@ unsigned char *convertToGrayscale(JSAMPLE *imageData, int width, int height, int
             int index = (y * width + x) * pixelSize;
 
             // for this pixel, take out the red, green, and blue values
-            unsigned char r = imageData[index];
-            unsigned char g = imageData[index + 1];
-            unsigned char b = imageData[index + 2];
+            JSAMPLE r = imageData[index];
+            JSAMPLE g = imageData[index + 1];
+            JSAMPLE b = imageData[index + 2];
 
             // calculation of grayscale value
             // The RGB values are converted to grayscale using the NTSC formula:
@@ -46,10 +46,9 @@ unsigned char *convertToGrayscale(JSAMPLE *imageData, int width, int height, int
             // unsigned char gray = (unsigned char)r;
 
             // use average of RGB to create grayscale image
-            unsigned char gray = (unsigned char)((r + g + b) / 3);
-
-            // set the pixel to the new grayscale value
+            JSAMPLE gray = (unsigned char)((r + g + b) / 3);
             grayImageData[y * width + x] = gray;
+            // set the pixel to the new grayscale value
         }
     }
     return grayImageData;
